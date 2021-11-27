@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'chef.dart';
+import 'client.dart';
 
-void main() => runApp(Chef());
+void main() => runApp(Client());
 
 class MyApp extends StatelessWidget {
   @override

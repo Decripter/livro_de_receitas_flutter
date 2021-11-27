@@ -9,13 +9,15 @@ class Chef extends StatefulWidget {
 
 class _ChefState extends State<Chef> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String dropdownValue = 'One';
+  String dropdownValue = '----';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.all(28.0),
@@ -24,32 +26,37 @@ class _ChefState extends State<Chef> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    DropdownButton<String>(
-                      value: dropdownValue,
-                      icon: const Icon(Icons.arrow_downward),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownValue = newValue!;
-                        });
-                      },
-                      items: <String>['One', 'Two', 'Free', 'Four']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DropdownButton<String>(
+                          value: dropdownValue,
+                          underline: Container(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownValue = newValue!;
+                            });
+                          },
+                          items: <String>[
+                            '----',
+                            'Ana',
+                            'Antonio',
+                            'Marcos',
+                            'Joana'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ],
                     ),
                     TextFormField(
+                      minLines: 10,
+                      maxLines: 100,
                       decoration: const InputDecoration(
-                        hintText: 'Enter your email',
+                        hintText: 'Sua receita aqui',
                       ),
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {

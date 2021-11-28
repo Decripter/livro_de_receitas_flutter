@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 Future<Album> fetchAlbum() async {
-  final response =
-      await http.get(Uri.parse('http://192.168.0.108:8000/client/2'));
+  final response = await http
+      .get(Uri.parse('https://livro-de-receita.herokuapp.com/client/1/'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -66,23 +66,34 @@ class _MyAppState extends State<MyApp> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Fetch Data Example'),
+          title: const Text('Receita'),
+          leading: IconButton(
+            // ignore: prefer_const_constructors
+            icon: Icon(Icons.download),
+            onPressed: () {
+              setState(() {
+                futureAlbum = fetchAlbum();
+              });
+            },
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Center(
-            child: FutureBuilder<Album>(
-              future: futureAlbum,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data!.receita);
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
+          child: SingleChildScrollView(
+            child: Center(
+              child: FutureBuilder<Album>(
+                future: futureAlbum,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(snapshot.data!.receita);
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
 
-                // By default, show a loading spinner.
-                return const CircularProgressIndicator();
-              },
+                  // By default, show a loading spinner.
+                  return const CircularProgressIndicator();
+                },
+              ),
             ),
           ),
         ),

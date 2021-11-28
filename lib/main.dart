@@ -11,7 +11,7 @@ Future<Album> fetchAlbum() async {
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    return Album.fromJson(jsonDecode(response.body));
+    return Album.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -60,6 +60,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Fetch Data Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,

@@ -49,7 +49,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  TextEditingController _textcontroller = TextEditingController();
+  final _textcontroller = TextEditingController();
 
   @override
   void dispose() {
@@ -57,14 +57,17 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  @override
   late Future<Album> futureAlbum;
 
   @override
   void initState() {
     super.initState();
-    String id = '1';
+    String id = '2';
     futureAlbum = fetchAlbum(id);
+  }
+
+  setText(snapshot) {
+    _textcontroller.text = snapshot.data!.id.toString();
   }
 
   @override
@@ -97,23 +100,19 @@ class _MyAppState extends State<MyApp> {
                 Row(
                   children: [
                     Flexible(
-                      child: Container(
-                        child: TextField(
-                          controller: _textcontroller,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Enter a search term'),
-                        ),
+                      child: TextField(
+                        controller: _textcontroller,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter a search term'),
                       ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.search),
                       onPressed: () {
-                        setState(() {
-                          String id = _textcontroller.text;
+                        String id = _textcontroller.text;
 
-                          futureAlbum = fetchAlbum(id);
-                        });
+                        futureAlbum = fetchAlbum(id);
                       },
                     ),
                   ],
@@ -125,6 +124,7 @@ class _MyAppState extends State<MyApp> {
                       future: futureAlbum,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
+                          setText(snapshot);
                           return Text(snapshot.data!.receita);
                         } else if (snapshot.hasError) {
                           return Text('${snapshot.error}');

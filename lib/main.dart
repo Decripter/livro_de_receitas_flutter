@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<Album> fetchAlbum() async {
-  final response = await http
-      .get(Uri.parse('https://livro-de-receita.herokuapp.com/client/1/'));
+Future<Album> fetchAlbum(id) async {
+  final response = await http.get(
+      Uri.parse('https://livro-de-receita.herokuapp.com/client/' + id + '/'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -49,12 +49,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  TextEditingController _textcontroller = TextEditingController();
+
+  @override
+  void dispose() {
+    _textcontroller.dispose();
+    super.dispose();
+  }
+
+  @override
   late Future<Album> futureAlbum;
 
   @override
   void initState() {
     super.initState();
-    futureAlbum = fetchAlbum();
+    String id = '1';
+    futureAlbum = fetchAlbum(id);
   }
 
   @override
@@ -73,7 +83,8 @@ class _MyAppState extends State<MyApp> {
             icon: Icon(Icons.download),
             onPressed: () {
               setState(() {
-                futureAlbum = fetchAlbum();
+                String id = '1';
+                futureAlbum = fetchAlbum(id);
               });
             },
           ),
@@ -81,20 +92,51 @@ class _MyAppState extends State<MyApp> {
         body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: SingleChildScrollView(
-            child: Center(
-              child: FutureBuilder<Album>(
-                future: futureAlbum,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(snapshot.data!.receita);
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  }
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Container(
+                        child: TextField(
+                          controller: _textcontroller,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Enter a search term'),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () {
+                        setState(() {
+                          String id = _textcontroller.text;
 
-                  // By default, show a loading spinner.
-                  return const CircularProgressIndicator();
-                },
-              ),
+                          futureAlbum = fetchAlbum(id);
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 18),
+                  child: Center(
+                    child: FutureBuilder<Album>(
+                      future: futureAlbum,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(snapshot.data!.receita);
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}');
+                        }
+
+                        // By default, show a loading spinner.
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
